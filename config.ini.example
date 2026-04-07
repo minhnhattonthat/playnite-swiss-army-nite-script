@@ -1,0 +1,92 @@
+; Swiss Army Nite - Configuration
+;
+; Copy this file to config.ini and adjust paths to match your setup.
+; Only paths for enabled features are required.
+
+; ---------------------------------------------------------------
+; Feature flags (true/false)
+; ---------------------------------------------------------------
+[Features]
+
+; Sync video trailers from ES-DE downloaded_media to Playnite ExtraMetadata
+EnableVideoSync = true
+
+; Copy game icons to use as logos in ExtraMetadata
+EnableLogoReplace = true
+
+; Set game "Date Added" to the ROM file's creation date
+EnableDateUpdate = true
+
+; Auto-assign Source metadata based on platform (e.g. "SNES", "PS1")
+EnableSourceUpdate = true
+
+; Tag games with "(Undub)" in the ROM filename
+EnableUndubTag = false
+
+; Tag Japanese games with "(patched)" as "English Patched"
+EnableTranslateTag = false
+
+; Generate ignore lists for ES-DE sync tools
+EnableIgnoreList = true
+
+; Assign random GUIDs to Version field for random game sorting
+EnableRandomList = true
+
+; Calculate total install size of filtered games
+EnableRomSize = true
+
+; Delete ROMs to recycle bin (includes Switch NCA/NSP cleanup)
+EnableRomDelete = true
+
+; Upload ROMs to phone via FTP (requires FTP section below)
+EnableFtpSend = false
+
+; Manage Yuzu/Citron NCAs (delete, copy/symlink between emulators)
+EnableSwitchNCA = false
+
+; Sync save files between RetroArch and DuckStation (PSX only)
+EnableDuckStation = false
+
+; Run auto-tagging (undub, translate, date, source) on library sync
+EnableAutoTagOnSync = true
+
+; ---------------------------------------------------------------
+; Paths - only needed for features you've enabled above
+; ---------------------------------------------------------------
+
+; Always required
+[Playnite]
+PlayniteLibraryPath = C:\Playnite\library\files
+ExtraMetadataPath = C:\Playnite\ExtraMetadata\games
+
+; Required by: EnableVideoSync
+[EmulationStationDE]
+ESMediaPath = C:\EmulationStation-DE\ES-DE\downloaded_media
+
+; Required by: EnableDuckStation
+[RetroArch]
+RetroArchSavesPath = C:\RetroArch\saves\Beetle PSX HW
+
+; Required by: EnableDuckStation
+[DuckStation]
+DuckStationMemcardsPath = C:\DuckStation\memcards
+
+; Required by: EnableRomDelete, EnableSwitchNCA
+[Ryujinx]
+RyujinxToolPath = C:\ryujinx\scripts\ryujinx_tool.py
+RyujinxPortablePath = C:\ryujinx\portable
+
+; Required by: EnableRomDelete, EnableSwitchNCA
+[Yuzu]
+YuzuUserPath = C:\yuzu\user
+
+; Required by: EnableSwitchNCA
+[Citron]
+CitronUserPath = C:\citron\user
+
+; Required by: EnableFtpSend
+[FTP]
+FtpHost = ftp://192.168.1.100:2121
+FtpRomsPath = /RetroArch/roms
+FtpUsername = ftp
+FtpPassword = ftp
