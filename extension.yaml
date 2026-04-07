@@ -1,0 +1,9 @@
+﻿Id: SwissArmyNite
+Name: Swiss Army Nite
+Author: Nathan Ton
+Version: 1.0
+Module: SwissArmyNiteScript.psm1
+Type: Script
+Links:
+    - Name: Github
+      Url: https://github.com/minhnhattonthat
