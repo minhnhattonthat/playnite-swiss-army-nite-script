@@ -87,7 +87,6 @@ function GetGameMenuItems() {
     }
     if (Get-Feature "EnableSwitchNCA") {
         $Items += New-GameMenuItem "Delete Yuzu NCAs"    "GameMenuDeleteYuzuNCAs"    ""
-        $Items += New-GameMenuItem "Copy NCAs to Citron" "GameMenuCopyNCAsToCitron"  ""
     }
 
     return $Items
@@ -257,21 +256,6 @@ function GameMenuDeleteYuzuNCAs() {
         $DeletedList += RemoveSwitchGameNCAs $Game
     }
     $PlayniteApi.Dialogs.ShowMessage("Deleted $($DeletedList.Count) files:`n$($DeletedList -join "`n")")
-}
-
-function GameMenuCopyNCAsToCitron() {
-    param($scriptGameMenuItemActionArgs)
-
-    $Cfg = Get-Config
-    $RegisteredPath = $Cfg.CitronUserPath + "\nand\user\Contents\registered"
-    Get-ChildItem -Path $RegisteredPath -Recurse | Remove-Item -Force -Recurse
-
-    $SelectedGames = $scriptGameMenuItemActionArgs.Games
-    $CopiedList = @()
-    foreach ($Game in $SelectedGames) {
-        $CopiedList += CopyNCAsToCitron $Game
-    }
-    $PlayniteApi.Dialogs.ShowMessage("Copied $($CopiedList.Count) files:`n$($CopiedList -join "`n")")
 }
 
 # --- Event hooks ---

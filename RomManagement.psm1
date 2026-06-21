@@ -36,7 +36,7 @@ function RemoveSwitchGameNCAs($Game) {
     $Cfg = Get-Config
     $RomPath = $Game.Roms[0].Path.replace("{InstallDir}\", $Game.InstallDirectory)
     $NcaList = @()
-    $Output = python $Cfg.RyujinxToolPath -l -r $Cfg.RyujinxPortablePath -y $Cfg.YuzuUserPath --nspfile $RomPath
+    $Output = python $Cfg.RyujinxToolPath -l --nspfile $RomPath
     $NcaList += $Output
     foreach ($Path in $NcaList) {
         Send-ToRecycleBin $Path | Out-Null
@@ -210,47 +210,4 @@ function SendRomToPhone($SelectedGames) {
     }
 
     return $SentList
-}
-
-function CopyNCAsToCitron($Game) {
-    $Cfg = Get-Config
-    $RomPath = $Game.Roms[0].Path.replace("{InstallDir}\", $Game.InstallDirectory)
-    $NcaList = @()
-    $Output = python $Cfg.RyujinxToolPath -l -r $Cfg.RyujinxPortablePath -y $Cfg.YuzuUserPath --nspfile $RomPath
-    $NcaList += $Output
-    if ($NcaList.Count -eq 0) {
-        $UpdateDir = $Game.InstallDirectory + "Updates"
-        $DLCDir = $Game.InstallDirectory + "DLCs"
-        python $Cfg.RyujinxToolPath -a -r $Cfg.RyujinxPortablePath -n $UpdateDir
-        python $Cfg.RyujinxToolPath -a -r $Cfg.RyujinxPortablePath -n $DLCDir
-        $Output = python $Cfg.RyujinxToolPath -l -r $Cfg.RyujinxPortablePath -y $Cfg.YuzuUserPath --nspfile $RomPath
-        $NcaList += $Output
-    }
-    foreach ($Path in $NcaList) {
-        if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-            continue
-        }
-        $TargetPath = $Path -Replace "yuzu-windows-msvc", "citron"
-        if (Test-Path -LiteralPath $TargetPath -PathType Leaf) {
-            continue
-        }
-        $TargetDir = Split-Path -Parent $TargetPath
-        if (-not (Test-Path -LiteralPath $TargetDir -PathType Container)) {
-            New-Item -Path $TargetDir -ItemType Directory -Force | Out-Null
-        }
-        cmd /c mklink $TargetPath $Path
-    }
-    $TitleIdResult = $RomPath | Select-String -Pattern '0100[a-zA-Z0-9]{12}'
-    $TitleId = $TitleIdResult.Matches[0].Value
-    $PvPath = $Cfg.YuzuUserPath + "\cache\game_list\" + $TitleId + ".pv.txt"
-    $TargetPvPath = $Cfg.CitronUserPath + "\cache\game_list\" + $TitleId + ".pv.txt"
-    if (Test-Path -LiteralPath $PvPath -PathType Leaf) {
-        $TargetPvDir = Split-Path -Parent $TargetPvPath
-        if (-not (Test-Path -LiteralPath $TargetPvDir -PathType Container)) {
-            New-Item -Path $TargetPvDir -ItemType Directory -Force
-        }
-        Copy-Item -Path $PvPath -Destination $TargetPvPath -Force
-        $NcaList += $PvPath
-    }
-    return $NcaList
 }
